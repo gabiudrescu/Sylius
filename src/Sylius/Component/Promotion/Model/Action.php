@@ -76,6 +76,27 @@ class Action implements ActionInterface
         $this->configuration = $configuration;
     }
 
+    public function setTaxons(array $taxons)
+    {
+        if (!empty($taxons))
+        {
+            foreach ($taxons as $taxon)
+            {
+                $this->configuration['filters']['taxons'][] = $taxon;
+            }
+        }
+    }
+
+    public function getTaxons()
+    {
+        if(isset($this->getConfiguration()['filters']['taxons']))
+        {
+            return $this->getConfiguration();
+        }
+
+        return [];
+    }
+
     /**
      * {@inheritdoc}
      */

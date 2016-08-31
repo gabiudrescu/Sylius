@@ -24,13 +24,13 @@ class TaxonFilter implements FilterInterface
      */
     public function filter(array $items, array $configuration)
     {
-        if (!isset($configuration['filters']['taxons'])) {
+        if (!isset($configuration['taxons'])) {
             return $items;
         }
 
         $filteredItems = [];
         foreach ($items as $item) {
-            if ($this->hasProductValidTaxon($item->getProduct(), $configuration['filters']['taxons'])) {
+            if ($this->hasProductValidTaxon($item->getProduct(), $configuration['taxons'])) {
                 $filteredItems[] = $item;
             }
         }
@@ -44,10 +44,10 @@ class TaxonFilter implements FilterInterface
      *
      * @return bool
      */
-    private function hasProductValidTaxon(ProductInterface $product, array $taxons)
+    private function hasProductValidTaxon(ProductInterface $product, $taxons)
     {
         foreach ($product->getTaxons() as $taxon) {
-            if (in_array($taxon->getCode(), $taxons)) {
+            if ($taxon->getCode() === $taxons) {
                 return true;
             }
         }

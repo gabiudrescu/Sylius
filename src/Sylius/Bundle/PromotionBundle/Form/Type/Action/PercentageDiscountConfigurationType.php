@@ -15,6 +15,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
+use Sylius\Component\Taxonomy\Repository\TaxonRepositoryInterface;
 
 /**
  * Percentage discount action configuration form type.
@@ -23,6 +24,19 @@ use Symfony\Component\Validator\Constraints\Type;
  */
 class PercentageDiscountConfigurationType extends AbstractType
 {
+    /**
+     * @var TaxonRepositoryInterface
+     */
+    private $taxonRepository;
+
+    /**
+     * @param TaxonRepositoryInterface $taxonRepository
+     */
+    public function __construct(TaxonRepositoryInterface $taxonRepository)
+    {
+        $this->taxonRepository = $taxonRepository;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -35,6 +49,14 @@ class PercentageDiscountConfigurationType extends AbstractType
                     new NotBlank(),
                     new Type(['type' => 'numeric']),
                 ],
+            ])
+            ->add('filters', 'sylius_taxon_from_identifier', [
+                'label' => 'sylius.form.promotion_rule.contains_taxon.taxon',
+                'class' => $this->taxonRepository->getClassName(),
+                'query_builder' => function () {
+                    return $this->taxonRepository->getFormQueryBuilder();
+                },
+                'identifier' => 'code'
             ])
         ;
     }
